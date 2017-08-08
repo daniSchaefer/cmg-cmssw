@@ -12,7 +12,8 @@ import subprocess
 
 def splitPFN(pfn):
     """Split the PFN in to { <protocol>, <host>, <path>, <opaque> }"""
-    groups = re.match("^(\w+)://([^/]+)/(/[^?]+)(\?.*)?", pfn)
+    #groups = re.match("^(\w\+)://([^/]+)/(/[^?]+)(\?.*)?", pfn) #giovanni  
+    groups = re.match("^(\w+)://([^/]+)/(/[^?]+)(\?.*)?", pfn) #clemens
     if not groups: raise RuntimeError, "Malformed pfn: '%s'" % pfn
     return (groups.group(1), groups.group(2), groups.group(3), groups.group(4))
 
@@ -48,7 +49,8 @@ def runEOSCommand(path, cmd, *args):
     tokens = splitPFN(path)
     
     #obviously, this is not nice
-    command = ['/afs/cern.ch/project/eos/installation/pro/bin/eos.select', cmd]
+    #command = ['/afs/cern.ch/project/eos/installation/pro/bin/eos.select', cmd]
+    command = ['eos', cmd] #jen from peruzzi
     command.extend(args)
     command.append(tokens[2])
     return _runCommand(command)
@@ -190,6 +192,7 @@ def createEOSDir( path ):
     ???Will, I'm quite worried by the fact that if this path already exists, and is
     a file, everything will 'work'. But then we have a file, and not a directory,
     while we expect a dir..."""
+    #lfn = eosToLFN(path)
     pfn = lfnToPFN(path)
     if not isEOSFile(pfn):
     # if not isDirectory(lfn):
